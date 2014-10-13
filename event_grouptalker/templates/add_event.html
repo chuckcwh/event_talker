@@ -1,0 +1,33 @@
+{% extends 'base_template.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    event list
+{% endblock %}
+
+{% block head %}
+    <link type="text/css" href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="{% static 'js/index.js' %}"></script>
+{#    <link href='http://fonts.googleapis.com/css?family=Lobster' rel='stylesheet' type='text/css'>#}
+{% endblock head %}
+
+{% block content %}
+
+{#    <div class="container">#}
+        <h1 align="center">Add Event</h1>
+
+        <form method="POST">
+            {% csrf_token %}
+            {% for field in form %}
+                <li>{{ field.label_tag | lower }}{{ field }}</li>
+            {% endfor %}
+            <input type="submit" value="Submit Event"/>
+        </form>
+
+        <hr>
+        <p><a href="{% url 'event_list' %}">event list</a></p>
+{#    </div>#}
+
+{% endblock content %}

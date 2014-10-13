@@ -1,0 +1,93 @@
+{% extends 'base_template.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    event
+{% endblock %}
+
+{% block head %}
+    <link type="text/css" href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    <link rel='stylesheet' href="{% static 'css/fullcalendar.css' %}" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+    <script src='https://cdn.firebase.com/js/client/1.0.15/firebase.js'></script>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js'></script>
+    <script src="{% static 'js/moment.min.js' %}"></script>
+    <script src={% static 'js/fullcalendar.js' %}></script>
+    <script src="{% static 'js/index.js' %}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#calendar').fullCalendar({
+                // put your options and callbacks here
+            })
+        });
+    </script>
+{% endblock head %}
+
+
+
+{% block content %}
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <h1>Event Name: {{ event.title }} <img class="event_pic_size" src="{{ event.event_pic.url }}"></h1>
+
+{#        calendar layout#}
+        <div id='calendar'></div>
+
+        <hr>
+{#        posts#}
+        <div class="col-md-6">
+            <h3>Add Post</h3>
+            <div style="border: 1px solid black">
+                <form method="POST">
+                    {% csrf_token %}
+                        <ul>
+                    {% for field in form %}
+                        <li>{{ field.label_tag | lower }}{{ field }}</li>
+                    {% endfor %}
+                        </ul>
+                    <input type="submit" value="Submit Post"/>
+                </form>
+            </div>
+
+            <h3>Posts</h3>
+                <div id="post_of_day"></div>
+        </div>
+
+{#        Real-time talk#}
+        <div class="col-md-6">
+            <h3>Real-time Talk</h3>
+            <div id='messagesDiv' style="overflow-y:scroll; height:400px;"></div>
+            <input type='text' id='messageInput' placeholder='Message'>
+        </div>
+
+        <script>
+            var myDataRef = new Firebase('https://jgb4axeecq6.firebaseio-demo.com/');
+            $('#messageInput').keypress(function (e) {
+                if ($('#messageInput').val()) {
+                    if (e.keyCode == 13) {
+                        var name = "{{ user.username }}";
+                        var text = $('#messageInput').val();
+                        myDataRef.push({name: name, text: text});
+                        $('#messageInput').val('');
+                    }
+                }
+            });
+            myDataRef.on('child_added', function(snapshot) {
+                var message = snapshot.val();
+                displayChatMessage(message.name, message.text);
+            });
+            function displayChatMessage(name, text) {
+                $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
+                $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
+            }
+        </script>
+
+
+        <p><a href="{% url 'event_list' %}">event list</a></p>
+    </div>
+    <div class="col-md-1"></div>
+
+{% endblock content %}
