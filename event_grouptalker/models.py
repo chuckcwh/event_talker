@@ -36,6 +36,8 @@ class Post(models.Model):
     # post_pic = models.ImageField(upload_to="post_pics", null=True, blank=True)
     create_time = models.DateTimeField(auto_now_add=True)
     edit_time = models.DateTimeField(auto_now=True)
+    
+    # could just be "posts" for related name here
     event = models.ForeignKey(Event, related_name='posts_event')
     user = models.ForeignKey(User, related_name='posts_user')
 
@@ -43,6 +45,7 @@ class Post(models.Model):
         return u"{}".format(self.title)
 
 class Comment(models.Model):
+    # could just be "comments" for related name here
     user = models.ForeignKey(User, related_name='comments_user')
     body = models.TextField()
     edit_time = models.DateTimeField(auto_now=True)
