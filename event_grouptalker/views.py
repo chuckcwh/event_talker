@@ -27,6 +27,7 @@ def view_event(request, event_id):
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
         if form.is_valid():
+            # the PostForm's save() method should be able to handle creating this
             Post.objects.create(title=form.cleaned_data['title'],
                                 body=form.cleaned_data['body'],
                                 # post_pic=form.cleaned_data['post_pic'],
@@ -43,6 +44,7 @@ def add_event(request):
     if request.method == 'POST':
         form = EventForm(request.POST, request.FILES)
         if form.is_valid():
+            # the EventForm's save() method should be able to handle creating this
             Event.objects.create(category=form.cleaned_data['category'],
                                  title=form.cleaned_data['title'],
                                  event_pic=form.cleaned_data['event_pic'])
