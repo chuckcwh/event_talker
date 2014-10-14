@@ -14,6 +14,7 @@ class EmailUserCreationForm(UserCreationForm):
         fields = ("username", "email", "password1", "password2", "first_name", "last_name")
 
 class EventForm(forms.ModelForm):
+    # Shouldn't need to copy and paste this choices array here, the ModelForm can just use the one on the model
     SPORTS = "Sports"
     EDUCATION = "Education"
     TECHNOLOGY = "Technology"
